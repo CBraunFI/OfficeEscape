@@ -1013,8 +1013,28 @@ class Level {
     }
 
     drawDecorations(ctx, camera) {
+        const frameCount = Math.floor(Date.now() / 100);
+
+        // Level-specific decorations
+        switch(this.levelNum) {
+            case 1: // Corporate Cubicles - Grey
+                this.drawLevel1Decorations(ctx, camera, frameCount);
+                break;
+            case 2: // Tech Office - Blue
+                this.drawLevel2Decorations(ctx, camera, frameCount);
+                break;
+            case 3: // Conference Room - Warm
+                this.drawLevel3Decorations(ctx, camera, frameCount);
+                break;
+            case 4: // Kitchen - Yellow
+                this.drawLevel4Decorations(ctx, camera, frameCount);
+                break;
+            case 5: // Boss Office - Red
+                this.drawLevel5Decorations(ctx, camera, frameCount);
+                break;
+        }
+
         // Overhead lighting (ceiling lights)
-        const lightColor = this.levelNum === 2 ? COLORS.ACCENT : COLORS.LIGHTEST;
         for (let i = 0; i < this.width; i += 200) {
             const screenX = i - camera.x;
             if (screenX > -100 && screenX < CONFIG.CANVAS_WIDTH + 100) {
@@ -1042,6 +1062,239 @@ class Level {
                 ctx.arc(screenX + 60, 50, 150, 0, Math.PI * 2);
                 ctx.fill();
             }
+        }
+    }
+
+    drawLevel1Decorations(ctx, camera, frameCount) {
+        // Desks with flickering computer screens
+        for (let i = 200; i < this.width; i += 300) {
+            const screenX = i - camera.x;
+            if (screenX > -150 && screenX < CONFIG.CANVAS_WIDTH + 150) {
+                // Desk in background
+                ctx.fillStyle = COLORS.DARK;
+                ctx.fillRect(screenX, 350, 100, 60);
+
+                // Computer monitor
+                ctx.fillStyle = COLORS.DARKEST;
+                ctx.fillRect(screenX + 30, 320, 40, 30);
+
+                // Flickering screen glow
+                const flicker = (frameCount + i) % 20 < 18 ? 0.8 : 0.3;
+                ctx.fillStyle = `rgba(139, 139, 139, ${flicker})`;
+                ctx.fillRect(screenX + 33, 323, 34, 24);
+
+                // Office chair
+                ctx.fillStyle = COLORS.MEDIUM;
+                ctx.fillRect(screenX + 35, 410, 30, 10);
+                ctx.fillRect(screenX + 45, 420, 10, 30);
+            }
+        }
+
+        // Pinboards with post-its
+        for (let i = 400; i < this.width; i += 500) {
+            const screenX = i - camera.x;
+            if (screenX > -100 && screenX < CONFIG.CANVAS_WIDTH + 100) {
+                // Pinboard background
+                ctx.fillStyle = COLORS.MEDIUM;
+                ctx.fillRect(screenX, 150, 80, 100);
+
+                // Post-it notes
+                const colors = [COLORS.ACCENT, COLORS.BEIGE, COLORS.LIGHT];
+                for (let py = 0; py < 3; py++) {
+                    for (let px = 0; px < 3; px++) {
+                        ctx.fillStyle = colors[(px + py) % 3];
+                        ctx.fillRect(screenX + 8 + px * 24, 160 + py * 30, 20, 20);
+                    }
+                }
+            }
+        }
+    }
+
+    drawLevel2Decorations(ctx, camera, frameCount) {
+        // Server racks with blinking lights
+        for (let i = 250; i < this.width; i += 400) {
+            const screenX = i - camera.x;
+            if (screenX > -100 && screenX < CONFIG.CANVAS_WIDTH + 100) {
+                // Server rack
+                ctx.fillStyle = COLORS.DARKEST;
+                ctx.fillRect(screenX, 280, 60, 120);
+
+                // Blinking server lights
+                for (let light = 0; light < 8; light++) {
+                    const blink = ((frameCount + light * 3) % 10) < 5;
+                    ctx.fillStyle = blink ? COLORS.ACCENT : COLORS.DARK;
+                    ctx.fillRect(screenX + 10, 290 + light * 14, 6, 6);
+                    ctx.fillRect(screenX + 44, 290 + light * 14, 6, 6);
+                }
+            }
+        }
+
+        // Large monitor displays with code
+        for (let i = 500; i < this.width; i += 450) {
+            const screenX = i - camera.x;
+            if (screenX > -120 && screenX < CONFIG.CANVAS_WIDTH + 120) {
+                // Monitor frame
+                ctx.fillStyle = COLORS.DARKEST;
+                ctx.fillRect(screenX, 200, 100, 80);
+
+                // Screen with "code" (cyan on dark)
+                ctx.fillStyle = COLORS.DARK;
+                ctx.fillRect(screenX + 5, 205, 90, 70);
+                ctx.fillStyle = COLORS.ACCENT;
+                for (let line = 0; line < 6; line++) {
+                    const width = 60 + (line * 7) % 25;
+                    ctx.fillRect(screenX + 10, 210 + line * 11, width, 2);
+                }
+            }
+        }
+    }
+
+    drawLevel3Decorations(ctx, camera, frameCount) {
+        // Presentation projector screen
+        const screenX = 600 - camera.x;
+        if (screenX > -300 && screenX < CONFIG.CANVAS_WIDTH + 300) {
+            // Large projection screen
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.fillRect(screenX, 100, 250, 180);
+
+            // Projected slide (warm glow)
+            ctx.fillStyle = COLORS.ACCENT;
+            ctx.fillRect(screenX + 10, 110, 230, 160);
+
+            // Fake "slide content" - bar chart
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.font = 'bold 12px monospace';
+            ctx.fillText('Q4 SYNERGY METRICS', screenX + 40, 130);
+
+            // Bar chart bars
+            ctx.fillStyle = COLORS.DARK;
+            ctx.fillRect(screenX + 30, 200, 30, -40);
+            ctx.fillRect(screenX + 70, 200, 30, -70);
+            ctx.fillRect(screenX + 110, 200, 30, -55);
+            ctx.fillRect(screenX + 150, 200, 30, -85);
+        }
+
+        // Conference chairs arranged
+        for (let i = 300; i < this.width; i += 180) {
+            const chairX = i - camera.x;
+            if (chairX > -60 && chairX < CONFIG.CANVAS_WIDTH + 60) {
+                // Chair
+                ctx.fillStyle = COLORS.DARK;
+                ctx.fillRect(chairX, 450, 35, 40);
+                ctx.fillRect(chairX + 5, 430, 25, 20);
+            }
+        }
+    }
+
+    drawLevel4Decorations(ctx, camera, frameCount) {
+        // Coffee machine
+        const coffeeX = 800 - camera.x;
+        if (coffeeX > -80 && coffeeX < CONFIG.CANVAS_WIDTH + 80) {
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.fillRect(coffeeX, 380, 60, 80);
+
+            // Coffee pot
+            ctx.fillStyle = COLORS.MEDIUM;
+            ctx.fillRect(coffeeX + 10, 400, 40, 50);
+
+            // Brewing indicator (blinking)
+            if (frameCount % 8 < 4) {
+                ctx.fillStyle = COLORS.ACCENT;
+                ctx.fillRect(coffeeX + 25, 390, 10, 5);
+            }
+        }
+
+        // Microwave
+        const microX = 1200 - camera.x;
+        if (microX > -70 && microX < CONFIG.CANVAS_WIDTH + 70) {
+            ctx.fillStyle = COLORS.LIGHT;
+            ctx.fillRect(microX, 360, 65, 45);
+
+            // Microwave window
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.fillRect(microX + 10, 370, 35, 25);
+
+            // Interior light (subtle flicker)
+            const microFlicker = frameCount % 15 < 14 ? 0.4 : 0.1;
+            ctx.fillStyle = `rgba(196, 196, 106, ${microFlicker})`;
+            ctx.fillRect(microX + 12, 372, 31, 21);
+        }
+
+        // Foosball table
+        const foosX = 1800 - camera.x;
+        if (foosX > -200 && foosX < CONFIG.CANVAS_WIDTH + 200) {
+            // Table body
+            ctx.fillStyle = COLORS.ACCENT;
+            ctx.fillRect(foosX, 420, 180, 80);
+
+            // Playing field (green)
+            ctx.fillStyle = COLORS.MEDIUM;
+            ctx.fillRect(foosX + 10, 430, 160, 60);
+
+            // Foosball rods
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.fillRect(foosX - 20, 450, 220, 3);
+            ctx.fillRect(foosX - 20, 470, 220, 3);
+        }
+    }
+
+    drawLevel5Decorations(ctx, camera, frameCount) {
+        // Executive desk with lamp
+        const deskX = 1000 - camera.x;
+        if (deskX > -200 && deskX < CONFIG.CANVAS_WIDTH + 200) {
+            // Massive desk
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.fillRect(deskX, 380, 180, 100);
+
+            // Desk lamp
+            ctx.fillStyle = COLORS.DARK;
+            ctx.fillRect(deskX + 140, 360, 8, 20);
+
+            // Lamp glow
+            const lampGlow = ctx.createRadialGradient(deskX + 144, 360, 5, deskX + 144, 360, 60);
+            lampGlow.addColorStop(0, 'rgba(180, 90, 90, 0.6)');
+            lampGlow.addColorStop(1, 'rgba(180, 90, 90, 0)');
+            ctx.fillStyle = lampGlow;
+            ctx.beginPath();
+            ctx.arc(deskX + 144, 360, 60, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Leather sofa
+        const sofaX = 2200 - camera.x;
+        if (sofaX > -150 && sofaX < CONFIG.CANVAS_WIDTH + 150) {
+            // Sofa back
+            ctx.fillStyle = COLORS.DARK;
+            ctx.fillRect(sofaX, 400, 140, 50);
+
+            // Sofa seat
+            ctx.fillStyle = COLORS.MEDIUM;
+            ctx.fillRect(sofaX, 450, 140, 30);
+
+            // Cushion details
+            ctx.fillStyle = COLORS.DARKEST;
+            ctx.fillRect(sofaX + 45, 410, 3, 40);
+            ctx.fillRect(sofaX + 92, 410, 3, 40);
+        }
+
+        // Trophy shelf
+        const trophyX = 2800 - camera.x;
+        if (trophyX > -120 && trophyX < CONFIG.CANVAS_WIDTH + 120) {
+            // Shelf
+            ctx.fillStyle = COLORS.DARK;
+            ctx.fillRect(trophyX, 320, 100, 8);
+
+            // Trophies
+            ctx.fillStyle = COLORS.ACCENT;
+            ctx.fillRect(trophyX + 15, 295, 15, 25);
+            ctx.fillRect(trophyX + 45, 290, 20, 30);
+            ctx.fillRect(trophyX + 75, 298, 12, 22);
+
+            // Trophy tops
+            ctx.fillStyle = COLORS.LIGHTEST;
+            ctx.fillRect(trophyX + 17, 290, 11, 5);
+            ctx.fillRect(trophyX + 50, 285, 10, 5);
+            ctx.fillRect(trophyX + 77, 293, 8, 5);
         }
     }
 }
