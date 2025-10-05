@@ -1595,9 +1595,11 @@ class Game {
                 // Section 1: Boss presents on ground - must face
                 { x: 200, y: 500, width: 80, height: 20, type: 'desk' },
 
-                // Presentation screen blocks high path
-                { x: 400, y: 350, width: 120, height: 80, type: 'cabinet' },
-                { x: 400, y: 430, width: 120, height: 120, type: 'cabinet' },
+                // Presentation screen - reduced height, can jump over
+                { x: 400, y: 490, width: 120, height: 60, type: 'cabinet' },
+
+                // Platform to help get over screen
+                { x: 300, y: 470, width: 60, height: 20, type: 'desk' },
 
                 // Section 2: Long conference table - enemies patrol on it
                 { x: 600, y: 450, width: 600, height: 30, type: 'desk' },
