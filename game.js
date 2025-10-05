@@ -860,9 +860,19 @@ class Camera {
         // Use appropriate canvas width based on device
         const isMobile = window.innerWidth <= 768;
         const canvasWidth = isMobile ? CONFIG.CANVAS_WIDTH_MOBILE : CONFIG.CANVAS_WIDTH;
+        const canvasHeight = isMobile ? CONFIG.CANVAS_HEIGHT_MOBILE : CONFIG.CANVAS_HEIGHT;
 
         const targetX = player.x - canvasWidth / 3;
         this.x = Math.max(0, Math.min(targetX, levelWidth - canvasWidth));
+
+        // On mobile: Focus on lower portion of the game (cut off top third)
+        if (isMobile) {
+            // Offset camera Y to show bottom 2/3 of the original game view
+            // This effectively "cuts off" the top third
+            this.y = CONFIG.CANVAS_HEIGHT - canvasHeight;
+        } else {
+            this.y = 0;
+        }
     }
 }
 
