@@ -76,6 +76,8 @@ const GAME_STATE = {
 const CONFIG = {
     CANVAS_WIDTH: 800,
     CANVAS_HEIGHT: 600,
+    CANVAS_WIDTH_MOBILE: 1200,  // Wider canvas for mobile
+    CANVAS_HEIGHT_MOBILE: 400,  // Lower canvas for mobile
     GRAVITY: 0.6,
     PLAYER_SPEED: 4.5,
     PLAYER_JUMP_FORCE: 13,
@@ -855,8 +857,12 @@ class Camera {
 
     update(player, levelWidth) {
         // Follow player with some lead
-        const targetX = player.x - CONFIG.CANVAS_WIDTH / 3;
-        this.x = Math.max(0, Math.min(targetX, levelWidth - CONFIG.CANVAS_WIDTH));
+        // Use appropriate canvas width based on device
+        const isMobile = window.innerWidth <= 768;
+        const canvasWidth = isMobile ? CONFIG.CANVAS_WIDTH_MOBILE : CONFIG.CANVAS_WIDTH;
+
+        const targetX = player.x - canvasWidth / 3;
+        this.x = Math.max(0, Math.min(targetX, levelWidth - canvasWidth));
     }
 }
 
@@ -879,14 +885,19 @@ class Level {
     }
 
     draw(ctx, camera) {
+        // Get current canvas dimensions
+        const isMobile = window.innerWidth <= 768;
+        const canvasWidth = isMobile ? CONFIG.CANVAS_WIDTH_MOBILE : CONFIG.CANVAS_WIDTH;
+        const canvasHeight = isMobile ? CONFIG.CANVAS_HEIGHT_MOBILE : CONFIG.CANVAS_HEIGHT;
+
         // Level-specific background drawing
-        this.drawBackground(ctx, camera);
+        this.drawBackground(ctx, camera, canvasWidth, canvasHeight);
 
         // Draw platforms (desks, cabinets, floor)
         this.platforms.forEach(platform => platform.draw(ctx, camera));
 
         // Draw level-specific decorations
-        this.drawDecorations(ctx, camera);
+        this.drawDecorations(ctx, camera, canvasWidth, canvasHeight);
 
         // Draw items
         this.items.forEach(item => item.draw(ctx, camera));
@@ -899,23 +910,23 @@ class Level {
 
         // Atmospheric vignette effect
         const vignette = ctx.createRadialGradient(
-            CONFIG.CANVAS_WIDTH / 2, CONFIG.CANVAS_HEIGHT / 2, CONFIG.CANVAS_HEIGHT * 0.3,
-            CONFIG.CANVAS_WIDTH / 2, CONFIG.CANVAS_HEIGHT / 2, CONFIG.CANVAS_HEIGHT * 0.9
+            canvasWidth / 2, canvasHeight / 2, canvasHeight * 0.3,
+            canvasWidth / 2, canvasHeight / 2, canvasHeight * 0.9
         );
         vignette.addColorStop(0, 'rgba(26, 26, 26, 0)');
         vignette.addColorStop(1, 'rgba(26, 26, 26, 0.5)');
         ctx.fillStyle = vignette;
-        ctx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     }
 
-    drawBackground(ctx, camera) {
+    drawBackground(ctx, camera, canvasWidth, canvasHeight) {
         // Base gradient background
-        const bgGradient = ctx.createLinearGradient(0, 0, 0, CONFIG.CANVAS_HEIGHT);
+        const bgGradient = ctx.createLinearGradient(0, 0, 0, canvasHeight);
         bgGradient.addColorStop(0, COLORS.DARKEST);
         bgGradient.addColorStop(0.3, COLORS.DARK);
         bgGradient.addColorStop(1, COLORS.MEDIUM);
         ctx.fillStyle = bgGradient;
-        ctx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
         const bgOffset = camera.x * 0.3;
 
@@ -924,7 +935,7 @@ class Level {
                 // Distant office cubicles
                 ctx.fillStyle = COLORS.DARKEST;
                 for (let i = 0; i < 10; i++) {
-                    const x = (i * 200 - bgOffset) % (CONFIG.CANVAS_WIDTH + 200);
+                    const x = (i * 200 - bgOffset) % (canvasWidth + 200);
                     ctx.fillRect(x, 100, 70, 80);
                     // Cubicle dividers
                     ctx.fillStyle = COLORS.MEDIUM;
@@ -937,7 +948,7 @@ class Level {
             case 2: // Blue/Cyan office with monitors
                 // Computer screens on distant walls
                 for (let i = 0; i < 12; i++) {
-                    const x = (i * 150 - bgOffset) % (CONFIG.CANVAS_WIDTH + 150);
+                    const x = (i * 150 - bgOffset) % (canvasWidth + 150);
                     // Monitor glow
                     ctx.fillStyle = COLORS.ACCENT;
                     ctx.fillRect(x, 120, 50, 40);
@@ -956,7 +967,7 @@ class Level {
                 ctx.fillRect(110 - bgOffset * 0.5, 90, 230, 130);
                 // Presentation chairs
                 for (let i = 0; i < 5; i++) {
-                    const x = (i * 180 - bgOffset) % (CONFIG.CANVAS_WIDTH + 180);
+                    const x = (i * 180 - bgOffset) % (canvasWidth + 180);
                     ctx.fillStyle = COLORS.DARK;
                     ctx.fillRect(x + 50, 400, 30, 40);
                 }
@@ -966,7 +977,7 @@ class Level {
                 // Kitchen cabinets on walls
                 ctx.fillStyle = COLORS.MEDIUM;
                 for (let i = 0; i < 8; i++) {
-                    const x = (i * 220 - bgOffset) % (CONFIG.CANVAS_WIDTH + 220);
+                    const x = (i * 220 - bgOffset) % (canvasWidth + 220);
                     ctx.fillRect(x, 90, 100, 60);
                     // Cabinet handles
                     ctx.fillStyle = COLORS.DARKEST;
@@ -984,7 +995,7 @@ class Level {
                 // Bookshelves
                 ctx.fillStyle = COLORS.DARKEST;
                 for (let i = 0; i < 6; i++) {
-                    const x = (i * 250 - bgOffset) % (CONFIG.CANVAS_WIDTH + 250);
+                    const x = (i * 250 - bgOffset) % (canvasWidth + 250);
                     ctx.fillRect(x, 100, 120, 180);
                     // Books
                     ctx.fillStyle = COLORS.ACCENT;
@@ -1006,13 +1017,13 @@ class Level {
         // Office walls texture
         ctx.fillStyle = COLORS.BEIGE;
         ctx.globalAlpha = 0.1;
-        for (let i = 0; i < CONFIG.CANVAS_WIDTH; i += 4) {
-            ctx.fillRect(i, 0, 1, CONFIG.CANVAS_HEIGHT);
+        for (let i = 0; i < canvasWidth; i += 4) {
+            ctx.fillRect(i, 0, 1, canvasHeight);
         }
         ctx.globalAlpha = 1.0;
     }
 
-    drawDecorations(ctx, camera) {
+    drawDecorations(ctx, camera, canvasWidth, canvasHeight) {
         const frameCount = Math.floor(Date.now() / 100);
 
         // Level-specific decorations
@@ -1037,7 +1048,7 @@ class Level {
         // Overhead lighting (ceiling lights)
         for (let i = 0; i < this.width; i += 200) {
             const screenX = i - camera.x;
-            if (screenX > -100 && screenX < CONFIG.CANVAS_WIDTH + 100) {
+            if (screenX > -100 && screenX < canvasWidth + 100) {
                 // Light fixture
                 ctx.fillStyle = COLORS.DARKEST;
                 ctx.fillRect(screenX + 40, 10, 40, 8);
@@ -1354,11 +1365,12 @@ class Game {
         const isMobile = window.innerWidth <= 768;
 
         if (isMobile) {
-            // Mobile: use actual visual viewport for browser responsiveness
+            // Mobile: use wider, lower canvas dimensions
             const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
             const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
 
-            const aspectRatio = CONFIG.CANVAS_WIDTH / CONFIG.CANVAS_HEIGHT;
+            // Use mobile-specific aspect ratio (3:1 - much wider than tall)
+            const aspectRatio = CONFIG.CANVAS_WIDTH_MOBILE / CONFIG.CANVAS_HEIGHT_MOBILE;
             let width = vw;
             let height = width / aspectRatio;
 
@@ -1369,6 +1381,10 @@ class Game {
 
             this.canvas.style.width = `${width}px`;
             this.canvas.style.height = `${height}px`;
+
+            // Set internal resolution to mobile dimensions
+            this.canvas.width = CONFIG.CANVAS_WIDTH_MOBILE;
+            this.canvas.height = CONFIG.CANVAS_HEIGHT_MOBILE;
         } else {
             // Desktop: original behavior
             const maxWidth = window.innerWidth - 40;
@@ -1385,11 +1401,11 @@ class Game {
 
             this.canvas.style.width = `${width}px`;
             this.canvas.style.height = `${height}px`;
-        }
 
-        // Keep internal resolution constant for pixel-perfect rendering
-        this.canvas.width = CONFIG.CANVAS_WIDTH;
-        this.canvas.height = CONFIG.CANVAS_HEIGHT;
+            // Keep desktop resolution
+            this.canvas.width = CONFIG.CANVAS_WIDTH;
+            this.canvas.height = CONFIG.CANVAS_HEIGHT;
+        }
     }
 
     initLevel(levelNum) {
