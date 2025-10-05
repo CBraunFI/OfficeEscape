@@ -1087,6 +1087,12 @@ class Game {
         this.initLevel(1);
         this.setupControls();
         this.setupTouchControls();
+
+        // Listen for visual viewport changes (mobile browser address bar)
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => this.resizeCanvas());
+        }
+
         this.gameLoop();
     }
 
@@ -1095,16 +1101,16 @@ class Game {
         const isMobile = window.innerWidth <= 768;
 
         if (isMobile) {
-            // Mobile: full screen with controls at top
-            const maxWidth = window.innerWidth;
-            const maxHeight = window.innerHeight - 80; // Space for touch controls
+            // Mobile: use actual visual viewport for browser responsiveness
+            const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            const vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
 
             const aspectRatio = CONFIG.CANVAS_WIDTH / CONFIG.CANVAS_HEIGHT;
-            let width = maxWidth;
+            let width = vw;
             let height = width / aspectRatio;
 
-            if (height > maxHeight) {
-                height = maxHeight;
+            if (height > vh) {
+                height = vh;
                 width = height * aspectRatio;
             }
 
