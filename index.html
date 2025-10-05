@@ -163,12 +163,34 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            #gameContainer {
+                padding: 0;
+                gap: 0;
+                height: 100vh;
+                justify-content: center;
+            }
+
             h1 {
                 font-size: 28px;
+                margin-bottom: 5px;
+                padding: 10px 0;
             }
 
             .subtitle {
                 font-size: 12px;
+            }
+
+            #gameCanvas {
+                width: 100vw !important;
+                height: auto !important;
+                max-height: calc(100vh - 60px);
+                border: none;
+                box-shadow: none;
             }
 
             #controls {
@@ -177,6 +199,45 @@
 
             #touchControls {
                 display: block;
+                top: 10px;
+                bottom: auto;
+            }
+
+            .touch-button {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+
+            #touchLeft {
+                left: 10px;
+                top: 10px;
+                bottom: auto;
+            }
+
+            #touchRight {
+                left: 80px;
+                top: 10px;
+                bottom: auto;
+            }
+
+            #touchJump {
+                right: 80px;
+                top: 10px;
+                bottom: auto;
+            }
+
+            #touchThrow {
+                right: 10px;
+                top: 10px;
+                bottom: auto;
+            }
+
+            #touchStart {
+                bottom: 30%;
+                width: 150px;
+                height: 60px;
+                font-size: 24px;
             }
         }
 

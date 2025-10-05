@@ -1092,21 +1092,41 @@ class Game {
 
     resizeCanvas() {
         const container = document.getElementById('gameContainer');
-        const maxWidth = window.innerWidth - 40;
-        const maxHeight = window.innerHeight - 200;
+        const isMobile = window.innerWidth <= 768;
 
-        // Maintain aspect ratio
-        const aspectRatio = CONFIG.CANVAS_WIDTH / CONFIG.CANVAS_HEIGHT;
-        let width = Math.min(CONFIG.CANVAS_WIDTH, maxWidth);
-        let height = width / aspectRatio;
+        if (isMobile) {
+            // Mobile: full screen with controls at top
+            const maxWidth = window.innerWidth;
+            const maxHeight = window.innerHeight - 80; // Space for touch controls
 
-        if (height > maxHeight) {
-            height = maxHeight;
-            width = height * aspectRatio;
+            const aspectRatio = CONFIG.CANVAS_WIDTH / CONFIG.CANVAS_HEIGHT;
+            let width = maxWidth;
+            let height = width / aspectRatio;
+
+            if (height > maxHeight) {
+                height = maxHeight;
+                width = height * aspectRatio;
+            }
+
+            this.canvas.style.width = `${width}px`;
+            this.canvas.style.height = `${height}px`;
+        } else {
+            // Desktop: original behavior
+            const maxWidth = window.innerWidth - 40;
+            const maxHeight = window.innerHeight - 200;
+
+            const aspectRatio = CONFIG.CANVAS_WIDTH / CONFIG.CANVAS_HEIGHT;
+            let width = Math.min(CONFIG.CANVAS_WIDTH, maxWidth);
+            let height = width / aspectRatio;
+
+            if (height > maxHeight) {
+                height = maxHeight;
+                width = height * aspectRatio;
+            }
+
+            this.canvas.style.width = `${width}px`;
+            this.canvas.style.height = `${height}px`;
         }
-
-        this.canvas.style.width = `${width}px`;
-        this.canvas.style.height = `${height}px`;
 
         // Keep internal resolution constant for pixel-perfect rendering
         this.canvas.width = CONFIG.CANVAS_WIDTH;
