@@ -1,0 +1,4 @@
+# Netlify configuration for Office Escape game
+
+[build]
+  publish = "."

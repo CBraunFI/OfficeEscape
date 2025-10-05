@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Office Escape</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(180deg, #1a1a1a 0%, #3d3020 50%, #2a2420 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            position: relative;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Atmospheric film grain effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 100vw;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #e8dcc8;
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            letter-spacing: 4px;
+        }
+
+        #gameCanvas {
+            border: 4px solid #3d3020;
+            box-shadow:
+                0 0 20px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(61, 48, 32, 0.5),
+                inset 0 0 20px rgba(0, 0, 0, 0.3);
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            background-color: #1a1a1a;
+            cursor: default;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        #controls {
+            color: #c4b5a0;
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.6;
+            background: rgba(61, 48, 32, 0.3);
+            padding: 15px 20px;
+            border-radius: 4px;
+            border: 2px solid #3d3020;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+            max-width: 90%;
+        }
+
+        /* Mobile touch controls */
+        #touchControls {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .touch-button {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(139, 115, 85, 0.7);
+            border: 3px solid #e8dcc8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #e8dcc8;
+            font-weight: bold;
+            user-select: none;
+            pointer-events: all;
+            touch-action: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .touch-button:active {
+            background: rgba(196, 181, 160, 0.9);
+            transform: scale(0.95);
+        }
+
+        #touchLeft {
+            left: 20px;
+            bottom: 80px;
+        }
+
+        #touchRight {
+            left: 110px;
+            bottom: 80px;
+        }
+
+        #touchJump {
+            right: 110px;
+            bottom: 80px;
+        }
+
+        #touchThrow {
+            right: 20px;
+            bottom: 80px;
+        }
+
+        #touchStart {
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 20px;
+            width: 120px;
+            height: 50px;
+            border-radius: 10px;
+            font-size: 18px;
+            background: rgba(139, 115, 85, 0.9);
+            display: none;
+        }
+
+        #touchStart:active {
+            background: rgba(196, 181, 160, 0.9);
+        }
+
+        #touchStart.visible {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            #controls {
+                display: none;
+            }
+
+            #touchControls {
+                display: block;
+            }
+        }
+
+        /* Portrait orientation warning */
+        #rotateWarning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #e8dcc8;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #rotateWarning .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: rotate 2s ease-in-out infinite;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(90deg); }
+        }
+
+        #rotateWarning h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #e8dcc8;
+        }
+
+        #rotateWarning p {
+            font-size: 16px;
+            color: #c4b5a0;
+        }
+
+        @media (orientation: portrait) {
+            #rotateWarning {
+                display: flex;
+            }
+
+            #gameContainer {
+                display: none;
+            }
+
+            #touchControls {
+                display: none;
+            }
+        }
+
+        #controls h3 {
+            margin-bottom: 15px;
+            color: #e8dcc8;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .control-row {
+            margin: 8px 0;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #8b7355;
+            font-size: 14px;
+            text-align: center;
+            font-style: italic;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1>OFFICE ESCAPE</h1>
+        <canvas id="gameCanvas"></canvas>
+        <div id="controls">
+            <h3>CONTROLS</h3>
+            <div class="control-row">← / → : Move</div>
+            <div class="control-row">SPACE / ↑ : Jump</div>
+            <div class="control-row">↓ : Duck</div>
+            <div class="control-row">X : Throw Item</div>
+        </div>
+    </div>
+
+    <!-- Touch controls for mobile -->
+    <div id="touchControls">
+        <div class="touch-button" id="touchLeft">←</div>
+        <div class="touch-button" id="touchRight">→</div>
+        <div class="touch-button" id="touchJump">↑</div>
+        <div class="touch-button" id="touchThrow">X</div>
+        <div class="touch-button" id="touchStart">START</div>
+    </div>
+
+    <!-- Rotate device warning -->
+    <div id="rotateWarning">
+        <div class="icon">📱→🔄</div>
+        <h2>Please Rotate Your Device</h2>
+        <p>This game is best played in landscape mode.</p>
+    </div>
+
+    <script src="sounds.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

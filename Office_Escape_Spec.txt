@@ -1,0 +1,762 @@
+# **OFFICE ESCAPE - Complete Game Design Specification**
+
+---
+
+## **1. KONZEPT**
+
+Ein satirischer 2D-Plattformer im klassischen Super-Mario-Stil, in dem ein ausgebrannter Büroangestellter täglich versucht, den Ausgang seines Büros zu erreichen, ohne von Chef, Kollegen und Kunden in endlose Gespräche verwickelt zu werden.
+
+**Kern-Thema**: Die absurde Realität des Büroalltags als Jump'n'Run-Hölle
+
+---
+
+## **2. VISUALS & ÄSTHETIK**
+
+### **Art Style**
+- **Pixel Art im 8-Bit-Style**
+- **Game Boy Farbpalette** (4 Farbtöne):
+  - **#0F380F** (Dunkelste): Outlines, Schatten, Text
+  - **#306230** (Dunkelgrün): Hauptfarbe für Objekte, Gegner
+  - **#8BAC0F** (Hellgrün): Highlights, Details, Plattformen
+  - **#9BBC0F** (Hellste): Hintergründe, Lichteffekte, Sprechblasen
+- **Cozy, reduzierter Look** inspiriert von Day of the Tentacle (Original)
+- **Seitliche 2D-Ansicht** (Side-Scroller)
+- **Proportionen**: Leicht karikiert, große Köpfe, kleiner Körper
+
+---
+
+## **3. SPIELMECHANIK**
+
+### **Steuerung**
+- **← / →**: Links/Rechts laufen (konstante Geschwindigkeit)
+- **Leertaste / ↑**: Springen (Höhe abhängig von Tastendruck-Dauer)
+- **↓**: Ducken (statisch, keine Bewegung möglich)
+- **X / Strg**: Action - Gegenstand werfen
+
+### **Spielablauf**
+1. **Levelstart**: 
+   - Spieler sitzt am Schreibtisch
+   - Steht auf mit Animation
+   - Großer Text erscheint: **"Here we go again."**
+   - Nach 2 Sekunden beginnt Spielkontrolle
+
+2. **Hauptphase**: 
+   - Zum Ausgang navigieren
+   - Gegnern ausweichen oder sie eliminieren
+   - Items sammeln und strategisch einsetzen
+
+3. **Ziel**: 
+   - Ausgang (Tür mit EXIT-Schild) erreichen
+   - Kurze Sieges-Animation
+
+4. **Bei Kontakt mit Gegner**:
+   - Screen freeze (0.3 Sekunden)
+   - Protagonist-Spruch erscheint
+   - Fade to black
+   - Respawn am Schreibtisch
+   - **"Here we go again."** (erneut)
+
+---
+
+## **4. GEGNER & NPCs**
+
+### **Der Chef** 
+**Aussehen**: Anzug, Krawatte, strenge Miene, Aktentasche
+
+**Bewegung**: 
+- Langsam, majestätisch
+- Patroulliert zwischen zwei Punkten
+- Bleibt manchmal stehen, verschränkt Arme
+
+**Dialoge** (erscheinen bei Annäherung):
+- "We need to talk!"
+- "Got a minute?"
+- "Performance review time!"
+- "Stay late today?"
+- "Team building event Saturday!"
+- "About your TPS reports..."
+- "Circle back on this?"
+- "Let's touch base."
+
+---
+
+### **Kollegen**
+**Aussehen**: Casual Business, Kaffeetasse in der Hand, müde
+
+**Bewegung**:
+- Mittlere Geschwindigkeit
+- Horizontal, monoton
+- Manchmal Richtungswechsel
+
+**Dialoge**:
+- "Quick check-in?"
+- "Just a second..."
+- "Can you help me with...?"
+- "Coffee break?"
+- "Did you get my email?"
+- "So about that thing..."
+- "Real quick question..."
+- "Got a sec?"
+- "Sorry to bother you, but..."
+- "This will only take a minute..."
+
+---
+
+### **Kunden**
+**Aussehen**: Anzug, gestresst, wedelt mit Papieren
+
+**Bewegung**:
+- Schnell, hektisch
+- Unregelmäßige Patterns (aber trotzdem vordefiniert)
+- Abrupte Richtungswechsel
+
+**Dialoge**:
+- "This is URGENT!"
+- "I need this NOW!"
+- "Can I speak to your manager?"
+- "Just one question..."
+- "This is unacceptable!"
+- "I've been waiting FOREVER!"
+- "I want a refund!"
+- "Let me speak to someone competent!"
+
+---
+
+### **Praktikant** (später hinzufügbar)
+**Aussehen**: Jung, nervös, zu großer Anzug
+
+**Bewegung**:
+- Sehr langsam
+- Bleibt oft stehen, schaut auf Handy
+- Versperrt Wege
+
+**Dialoge**:
+- "Where is the printer?"
+- "Is this your stapler?"
+- "Can you show me...?"
+- "I'm new here..."
+
+---
+
+### **HR-Mitarbeiter** (später hinzufügbar)
+**Aussehen**: Perfekte Frisur, Clipboard, falsches Lächeln
+
+**Bewegung**:
+- Mittlere Geschwindigkeit
+- Verfolgt manchmal den Spieler kurz
+
+**Dialoge**:
+- "Mandatory training!"
+- "Sign this form..."
+- "Company culture survey!"
+- "We value your feedback!"
+
+---
+
+## **5. WURFGEGENSTÄNDE**
+
+### **Verfügbare Items**
+
+#### **Kaffeetasse**
+- Am häufigsten
+- Mittlere Wurfweite
+- Schnelle Fluggeschwindigkeit
+
+#### **Aktenordner**
+- Mittlere Häufigkeit
+- Große Hitbox
+- Langsamer Wurf, aber effektiv
+
+#### **Büropflanze**
+- Selten
+- Große Reichweite
+- Hoher Bogen
+
+#### **Tacker** (später)
+- Sehr schnell
+- Kleine Hitbox
+- Direkte Linie
+
+#### **Tastatur** (später)
+- Sehr selten
+- Eliminiert alle Gegner auf dem Bildschirm
+- "Rage Quit"-Power-Up
+
+### **Mechanik**
+- Items liegen im Level verteilt (auf Schreibtischen, Regalen)
+- Spieler kann **einen Gegenstand** zur Zeit tragen
+- Symbol über Kopf zeigt getragenes Item
+- Wurf in Blickrichtung mit parabolischer Flugbahn
+- Trifft Gegner → Gegner verschwindet mit kleiner Animation und Sound
+- Items spawnen nach 10 Sekunden wieder am selben Ort
+
+---
+
+## **6. LEVEL-DESIGN**
+
+### **Struktur**
+- **Scrolling-Kamera**: Folgt Spieler horizontal, leichter Vorlauf
+- **Länge**: Kurze Levels (1-2 Minuten bei perfektem Durchlauf)
+- **Checkpoints**: Keine - volle Reset-Mechanik für maximale Frustration (satirisch)
+
+---
+
+### **Level 1: "The Cubicle Maze"**
+**Thema**: Großraumbüro
+
+**Einleitung-Text**: 
+- "Level 1"
+- "The Cubicle Maze"
+- "8:47 AM"
+
+**Plattformen**:
+- Schreibtische (niedrig)
+- Aktenschränke (mittel)
+- Druckerstation (hoch)
+
+**Gegner**:
+- 3-4 Kollegen
+- 1 Chef (am Ende)
+
+**Items**:
+- Kaffeetassen überall
+- 2 Aktenordner
+
+**Umgebungs-Texte** (bei Berührung bestimmter Objekte):
+- Bei Kaffeemaschine: "Empty. Of course."
+- Bei Drucker: "PC LOAD LETTER???"
+- Bei Topfpflanze: "The only living thing here."
+- Bei Schreibtisch: "Not my desk anymore."
+
+**Ausgang**: 
+- Tür mit grünem EXIT-Schild
+- Bei Erreichen: **"Level Complete!"**
+- Protagonist: **"One down..."**
+
+---
+
+### **Level 2: "The Corridor of Meetings"**
+**Thema**: Langer Büroflur mit Konferenzraum-Türen
+
+**Einleitung-Text**:
+- "Level 2"
+- "The Corridor of Meetings"
+- "10:23 AM"
+
+**Plattformen**:
+- Wasserspender
+- Rollwagen
+- Deckenlampen (schwingend)
+
+**Gegner**:
+- 2 Chefs
+- 4 Kollegen
+- 1 Kunde
+
+**Items**:
+- Büropflanzen
+- Kaffeetassen
+- 1 Aktenordner
+
+**Umgebungs-Texte**:
+- Bei Konferenzraum-Tür: "Meeting in progress..."
+- Bei Uhr: "Is it Friday yet?"
+- Bei Feuerlöscher: "In case of emergency..."
+- Bei Whiteboard: "Synergy! Innovation!"
+
+**Besonderheit**:
+- Türen öffnen/schließen sich rhythmisch
+- Spieler muss Timing beachten
+
+---
+
+### **Level 3: "Conference Room Hell"**
+**Thema**: Riesiger Konferenzraum
+
+**Einleitung-Text**:
+- "Level 3"
+- "Conference Room Hell"
+- "2:15 PM"
+
+**Plattformen**:
+- Konferenztisch (lang, in der Mitte)
+- Präsentations-Screen
+- Stühle (beweglich)
+
+**Gegner**:
+- 1 Chef (präsentiert, bewegt sich nicht)
+- 3 Kollegen (im Meeting, dösen, bewegen sich langsam)
+- 2 Kunden (aggressive Bewegung)
+
+**Items**:
+- Projektor-Fernbedienung
+- Marker
+- Wasserflaschen
+
+**Umgebungs-Texte**:
+- Bei Beamer: "Slides 1-47 of 89"
+- Bei Flipchart: "ACTIONABLE INSIGHTS"
+- Bei Stuhl: "This could've been an email."
+- Bei Telefon: "You're on mute."
+
+**Besonderheit**:
+- PowerPoint-Folien wechseln im Hintergrund
+- Bei jeder Folie neuer Buzzword
+
+---
+
+### **Level 4: "The Kitchen Chaos"**
+**Thema**: Büroküche / Pausenraum
+
+**Einleitung-Text**:
+- "Level 4"
+- "The Kitchen Chaos"
+- "12:37 PM"
+
+**Plattformen**:
+- Kühlschrank
+- Mikrowelle
+- Spüle
+- Tische
+
+**Gegner**:
+- 5 Kollegen (alle wollen Mittagspause machen)
+- 1 Chef (kontrolliert, wer wie lange Pause macht)
+
+**Items**:
+- Tassen
+- Teller
+- Besteck
+- Tupperware
+
+**Umgebungs-Texte**:
+- Bei Kühlschrank: "Someone stole my lunch."
+- Bei Mikrowelle: "Please clean after use!"
+- Bei Spüle: "Dirty dishes for 3 days..."
+- Bei Kaffeemaschine: "Out of order. Again."
+- Bei Post-It: "DON'T TOUCH MY FOOD - Karen"
+
+**Besonderheit**:
+- Mikrowelle piept rhythmisch (Geräusch + visuelle Cue)
+- Spieler muss Timing nutzen
+
+---
+
+### **Level 5: "The Exit Strategy"**
+**Thema**: Chefbüro → Ausgang
+
+**Einleitung-Text**:
+- "Level 5"
+- "The Exit Strategy"
+- "5:47 PM"
+
+**Plattformen**:
+- Luxus-Schreibtisch
+- Bücherregal
+- Ledersofas
+- Golfausrüstung
+
+**Gegner**:
+- **BOSS: Der Chef** (größer, mehr Dialoge, komplexere Bewegung)
+- 2 Kunden (finale Beschwerden)
+- 1 HR-Person
+
+**Items**:
+- Golfschläger (Super-Item)
+- Bücher
+- Pokale
+
+**Boss-Dialoge** (wiederholen sich):
+- "Before you go..."
+- "One more thing..."
+- "This will be quick..."
+- "I'll keep this brief..."
+- "Just to clarify..."
+- "To summarize..."
+
+**Umgebungs-Texte**:
+- Bei Diplom: "MBA. Naturally."
+- Bei Golfpokal: "Priorities."
+- Bei Familienfoto: "They never see him either."
+- Bei EXIT-Tür: "So close..."
+
+**Finale**:
+- Bei Erreichen des Ausgangs:
+- **"FREEDOM!"** (große Schrift)
+- **"See you tomorrow."** (klein, zynisch)
+- Credits rollen
+
+---
+
+## **7. DIALOG-SYSTEM**
+
+### **Darstellung**
+
+#### **Protagonist-Dialoge**
+**Levelstart:**
+- Bildschirmfüllend, zentriert
+- Sehr große Schrift (1/4 Bildschirmhöhe)
+- Schwarzer Hintergrund
+- **"Here we go again."**
+- Fade-in (0.5s), Hold (2s), Fade-out (0.5s)
+
+**Bei Reset/Tod:**
+Wechselnde Sprüche (zufällig):
+- "Not again..."
+- "*Sigh*"
+- "Why me?"
+- "I need a vacation."
+- "Maybe tomorrow..."
+- "This is fine."
+- "Deep breaths."
+- "Count to ten..."
+- "Keep smiling."
+- "Almost had it."
+
+**Bei Level-Complete:**
+- "Level Complete!"
+- Dann einer von:
+  - "One down..."
+  - "Survived."
+  - "Made it. Barely."
+  - "Freedom... temporary."
+
+**Bei Final Level Complete:**
+- "FREEDOM!" (groß)
+- "See you tomorrow." (klein, nach 2 Sek)
+
+#### **Gegner-Dialoge**
+**Sprechblasen-System:**
+- Comic-Style Sprechblase (Pixel-Art)
+- Erscheint über Gegner-Kopf
+- Trigger: Gegner kommt in sichtbaren Bereich (ca. 30% vom Bildschirmrand)
+- Dauer: 2 Sekunden, dann verschwinden
+- Mehrere Dialoge pro Gegner (zufällig ausgewählt)
+
+**Styling:**
+- Pixelart-Font (z.B. "Press Start 2P" oder ähnlich)
+- Dunkler Text (#0F380F)
+- Heller Blasen-Hintergrund (#9BBC0F)
+- Schwarzer Outline um Blase
+
+#### **Umgebungs-Texte**
+**Trigger**: Spieler läuft an Objekt vorbei (Kollision mit unsichtbarer Trigger-Zone)
+
+**Darstellung**:
+- Kleine Textbox unten am Bildschirm
+- Oder: Schwebender Text über Objekt
+- Erscheint für 1.5 Sekunden
+- Kann nur einmal pro Level getriggert werden
+
+**Beispiele**:
+- Kaffeemaschine: "Empty. Of course."
+- Drucker: "PC LOAD LETTER???"
+- Uhr: "Is it Friday yet?"
+- Topfpflanze: "The only living thing here."
+- Whiteboard: "Synergy! Innovation! Disruption!"
+- Post-It: "Remember to remember!"
+- Kalender: "Only 4 more days..."
+
+#### **Level-Titel**
+**Bei Levelstart** (nach "Here we go again"):
+- Zentriert, mittelgroße Schrift
+- Format:
+  ```
+  Level X
+  [Level Name]
+  [Uhrzeit]
+  ```
+- Hold für 2 Sekunden
+- Fade-out
+
+---
+
+## **8. SOUND & MUSIK**
+
+### **SFX (Sound Effects)**
+
+**Spieler-Aktionen:**
+- Schritt-Sounds (optional, leise)
+- Sprung: "Wusch"
+- Landung: "Bump"
+- Wurf: "Whoosh"
+- Treffer: "Bonk" + Gegner-"Oof"
+- Ducken: Leises "Swoosh"
+
+**Interaktionen:**
+- Item aufheben: "Pop"
+- Gegner getroffen: "Hit" + kleiner Jingle
+- Tod/Reset: Trauriger "Wah-wah"-Sound
+- Level Complete: Fröhlicher 8-Bit-Jingle
+- Tür/Ausgang: "Ding!"
+
+**Umgebung:**
+- Kaffeemaschine: Gurgeln (Loop)
+- Drucker: Mechanisches Rattern
+- Mikrowelle: Piep-Piep
+- Telefon klingelt (Hintergrund)
+
+**Voice/Text:**
+- "Here we go again" - kann als Text-to-Speech oder nur Text
+- Gegner-Dialoge: Kleine "Blip"-Sounds beim Erscheinen
+
+### **Musik**
+
+**Main Theme (alle Level):**
+- 8-Bit Chiptune
+- Tempo: Moderat (120 BPM)
+- Stimmung: Leicht hektisch, aber verspielt
+- Melodie: Monoton-repetitiv (Büro-Alltag)
+- Instruments: Square Wave, Triangle, Noise Channel
+- Loop: 30-45 Sekunden
+
+**Boss-Music (Level 5):**
+- Gleiches Thema, aber schneller (140 BPM)
+- Mehr Dringlichkeit
+- Zusätzliche Percussion
+
+**Victory Jingle:**
+- Kurz (3-5 Sekunden)
+- Fröhlich
+- Klassisches "Ta-da!"
+
+**Game Over/Reset:**
+- Sehr kurz (1-2 Sekunden)
+- Absteigende Tonleiter
+- Traurig, aber komisch
+
+---
+
+## **9. SPIELZIEL & PROGRESSION**
+
+### **Primäres Ziel**
+**Pro Level:** Ausgang erreichen ohne von Gegnern erwischt zu werden
+
+**Gesamt:** Alle 5 Levels durchspielen
+
+### **Progression**
+- **Kein Punktesystem** (vorerst)
+- **Keine Lives** - bei Kontakt: kompletter Level-Reset
+- **Keine Checkpoints** - maximale Frustration für satirischen Effekt
+- **Erfolg = Level geschafft**
+
+### **Schwierigkeitskurve**
+- Level 1: Tutorial-artig, wenige Gegner
+- Level 2: Mehr Gegner, Timing-Elemente
+- Level 3: Komplexere Layouts
+- Level 4: Viele Gegner, chaotisch
+- Level 5: Boss-Fight, alle Mechaniken kombiniert
+
+### **Replay-Value**
+- Speedrun-Potential
+- Verschiedene Lösungswege
+- Alle Umgebungs-Texte finden
+- Challenge: "Pazifist Run" (keine Gegner töten)
+
+---
+
+## **10. TECHNISCHE UMSETZUNG**
+
+### **Plattform**
+- **HTML5 Canvas** oder **React Component**
+- Browser-basiert
+- Keyboard-Steuerung
+
+### **Game Engine / Framework**
+- Vanilla JavaScript mit Canvas
+- Oder: React mit useState/useEffect für Game Loop
+- Einfache Physik-Engine:
+  - Gravitation
+  - Kollisionserkennung (Box Collision)
+  - Bewegungsvektor
+
+### **Architektur**
+
+**Hauptkomponenten:**
+```
+- GameEngine (Game Loop, Update, Render)
+- Player (Position, Velocity, State, Input)
+- Enemy (Type, Pattern, Position, Dialog)
+- Item (Type, Position, State)
+- Level (Layout, Platforms, Spawns)
+- UI (Dialogs, HUD, Textboxes)
+- Physics (Gravity, Collision, Movement)
+- Audio (SFX, Music)
+```
+
+**Game States:**
+- INTRO (Schreibtisch-Szene)
+- PLAYING (Normale Kontrolle)
+- PAUSED
+- DIALOG (Während große Texte angezeigt werden)
+- DEATH (Reset-Animation)
+- LEVEL_COMPLETE
+- GAME_OVER
+
+### **Kollisionssystem**
+- **Player vs Platform**: Standard-Plattformer-Kollision
+- **Player vs Enemy**: Trigger Reset
+- **Player vs Item**: Item aufheben
+- **Item (geworfen) vs Enemy**: Enemy eliminieren
+- **Player vs Exit**: Level Complete
+
+### **Sprite-System**
+- Einfache Pixel-Rectangles oder Mini-Sprites
+- Animationen: Laufen (2-3 Frames), Springen (1 Frame), Ducken (1 Frame)
+- Gegner: Idle + Walk (je 2 Frames)
+
+---
+
+## **11. MVP (Minimum Viable Product)**
+
+### **Must-Have für erste spielbare Version:**
+
+✅ **Spieler-Mechanik:**
+- Links/Rechts-Bewegung
+- Sprung (variable Höhe)
+- Ducken
+- Wurf-Mechanik
+
+✅ **Ein Test-Level:**
+- 3-4 Plattformen
+- 2-3 Gegner (mindestens 1 Typ)
+- 1 Item-Typ (Kaffeetasse)
+- Ausgang
+
+✅ **Kollision:**
+- Player vs Platform
+- Player vs Enemy → Reset
+- Thrown Item vs Enemy
+
+✅ **Dialog-System:**
+- "Here we go again" bei Start
+- Mind. 1 Gegner-Dialog
+- Level Complete Text
+
+✅ **Visuals:**
+- Game Boy Farbpalette
+- Einfache Pixel-Grafiken
+- Scrolling-Kamera
+
+✅ **Audio:**
+- Mind. 3 SFX (Jump, Throw, Hit)
+- Optional: Simple Hintergrundmusik
+
+---
+
+## **12. FUTURE FEATURES / ERWEITERUNGEN**
+
+### **Phase 2:**
+- Alle 5 Level komplett
+- Alle Gegner-Typen
+- Alle Items
+- Komplettes Dialog-System
+- Alle Umgebungs-Texte
+
+### **Phase 3:**
+- **Punktesystem:** Zeit-basiert, weniger Resets = bessere Bewertung
+- **Statistiken:** Deaths, Completion Time, Items Used
+- **Achievements:** 
+  - "Speedrunner" (Level unter 60 Sek)
+  - "Pacifist" (Kein Gegner getötet)
+  - "Coffee Addict" (Nur Kaffeetassen benutzt)
+  - "Rage Quit" (10 Tode in einem Level)
+
+### **Phase 4:**
+- **Power-Ups:**
+  - Kaffee = Temporärer Speed Boost
+  - Energy Drink = Doppelsprung
+  - Kopfhörer = Gegner ignorieren dich kurzzeitig
+- **Boss-Varianten** mit komplexeren Patterns
+- **Endless Mode:** Prozedural generierte Level
+- **Different Characters:** 
+  - "The Newbie" (langsamer)
+  - "The Senior" (schneller, mehr Items)
+  - "The Intern" (schwierigerer Modus)
+
+### **Phase 5:**
+- **Level-Editor:** Community-Level erstellen
+- **Multiplayer:** Co-op oder Race Mode
+- **Mobile Version:** Touch-Controls
+- **Story Mode:** Zwischen-Cutscenes, Narrative
+
+---
+
+## **13. EASTER EGGS & SPECIAL TOUCHES**
+
+### **Versteckte Gags:**
+
+**Konami-Code** (↑↑↓↓←→←→BA):
+- Aktiviert "Overtime Mode"
+- Alles wird schneller
+- Protagonist: "Not again!"
+
+**Bei 10 Toden im selben Level:**
+- Text erscheint: "Maybe try another career?"
+- Oder: "Have you considered meditation?"
+
+**Geheimraum** (in Level 3):
+- Versteckte Tür hinter Flipchart
+- Leerer Raum mit einem Stuhl
+- Text: "The thinking room."
+- Protagonist: "Finally. Peace."
+
+**Wochenenden-Modus** (nur Sa/So spielbar):
+- Alle Gegner schlafen/bewegen sich nicht
+- Text beim Start: "Why am I here on a Saturday?"
+
+**Zeit-basierte Events:**
+- Zwischen 12-13 Uhr: Mehr Kollegen in Küche
+- Nach 17 Uhr: Chef-Dialoge aggressiver
+- Freitag: Spezialer "TGIF"-Modus
+
+**Seltene Dialoge** (1% Chance):
+- Chef: "You're doing great!" (dann erschrickt Spieler)
+- Kollege: "I brought donuts!"
+- Kunde: "Thanks for your help!" (Gegner verwandelt sich in Item)
+
+---
+
+## **14. ZUSAMMENFASSUNG**
+
+**Office Escape** ist ein satirischer 2D-Plattformer, der den Büroalltag als absurdes Jump'n'Run-Abenteuer darstellt. Mit reduziertem Game-Boy-Pixel-Style, prägnanten Dialogen und klassischer Plattformer-Mechanik parodiert das Spiel die moderne Arbeitswelt.
+
+**Kernmerkmale:**
+- ✅ Klassisches Jump'n'Run-Gameplay (Mario-Style)
+- ✅ Game Boy Ästhetik (4-Farben-Palette)
+- ✅ Satirisches Dialog-System
+- ✅ Büro-Thematik mit Wiedererkennungswert
+- ✅ Kurze, knackige Level
+- ✅ Hoher Frustrations-Faktor (satirisch gemeint)
+- ✅ Cozy, aber zynisch
+
+**Zielgruppe:** 
+Büro-Arbeiter, Retro-Gaming-Fans, Menschen mit Sinn für Galgenhumor
+
+**Plattform:** 
+Web-Browser (HTML5)
+
+**Entwicklungszeit (Schätzung):**
+- MVP: 2-3 Tage
+- Vollversion (5 Level): 1-2 Wochen
+- Polished Final: 3-4 Wochen
+
+---
+
+## **15. NÄCHSTE SCHRITTE**
+
+**Soll ich jetzt den Prototyp entwickeln?**
+
+Ich würde vorschlagen:
+1. **MVP-Version** mit:
+   - Level 1 komplett spielbar
+   - Alle Basis-Mechaniken
+   - Dialog-System funktional
+   - Game Boy Farbpalette
+   - Basic SFX
+
+2. **Dann iterativ erweitern:**
+   - Level 2-5 hinzufügen
+   - Mehr Dialoge
+   - Mehr Items
+   - Polish
